@@ -14,6 +14,7 @@
 		DA4E715E21FA363A007004F1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA4E715C21FA363A007004F1 /* LaunchScreen.storyboard */; };
 		DA4E716621FA3929007004F1 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4E716521FA3929007004F1 /* SwiftyJSON.swift */; };
 		DA4E716821FA3AFE007004F1 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4E716721FA3AFE007004F1 /* DetailViewController.swift */; };
+		DA4E716B21FA3D47007004F1 /* Project38.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DA4E716921FA3D47007004F1 /* Project38.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		DA4E715F21FA363A007004F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DA4E716521FA3929007004F1 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		DA4E716721FA3AFE007004F1 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		DA4E716A21FA3D47007004F1 /* Project38.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Project38.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 				DA4E715321FA3639007004F1 /* AppDelegate.swift */,
 				DA4E715521FA3639007004F1 /* ViewController.swift */,
 				DA4E715721FA3639007004F1 /* Main.storyboard */,
+				DA4E716921FA3D47007004F1 /* Project38.xcdatamodeld */,
 				DA4E716721FA3AFE007004F1 /* DetailViewController.swift */,
 				DA4E715A21FA363A007004F1 /* Assets.xcassets */,
 				DA4E715C21FA363A007004F1 /* LaunchScreen.storyboard */,
@@ -142,6 +145,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA4E716621FA3929007004F1 /* SwiftyJSON.swift in Sources */,
+				DA4E716B21FA3D47007004F1 /* Project38.xcdatamodeld in Sources */,
 				DA4E715621FA3639007004F1 /* ViewController.swift in Sources */,
 				DA4E715421FA3639007004F1 /* AppDelegate.swift in Sources */,
 				DA4E716821FA3AFE007004F1 /* DetailViewController.swift in Sources */,
@@ -342,6 +346,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		DA4E716921FA3D47007004F1 /* Project38.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				DA4E716A21FA3D47007004F1 /* Project38.xcdatamodel */,
+			);
+			currentVersion = DA4E716A21FA3D47007004F1 /* Project38.xcdatamodel */;
+			path = Project38.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = DA4E714821FA3639007004F1 /* Project object */;
 }
