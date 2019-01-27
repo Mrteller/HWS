@@ -12,11 +12,13 @@ import CoreData
 class ViewController: UITableViewController {
     
     var container: NSPersistentContainer!
+    var commits = [Commit]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         container = NSPersistentContainer(name: "Project38") // load from model file Project38.xcdatamodeld
-        container.loadPersistentStores { (storeDescription, error) in // load existing or create new database on disk otherwise
+        container.loadPersistentStores { [weak self] (storeDescription, error) in // load existing or create new database on disk otherwise
+            self?.container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
             if let error = error {
                 print("Inresolved error \(error.localizedDescription)")
             }
@@ -25,7 +27,8 @@ class ViewController: UITableViewController {
 //        commit.message = "woo"
 //        commit.url = "http://www.example.com"
 //        commit.date = Date()
-        performSelector(inBackground: #selector(fetchCommits), with: nil) //Paul's note: compare with othe background fetching technicues
+        performSelector(inBackground: #selector(fetchCommits), with: nil) //Paul's note: compare with other background fetching techniques
+        loadSavedData()
     }
     
     @objc func fetchCommits() { //Paul's note: make real error handling someday
@@ -42,6 +45,7 @@ class ViewController: UITableViewController {
                     self.configure(commit: commit, usingJSON: jsonCommit)
                 }
                 self.saveContext() // Paul's note: that's right: viewContext is main thread context and should be saved (and operated) on main thread only. Even Asycncroniously.
+                self.loadSavedData()
             }
         }
     }
@@ -52,7 +56,8 @@ class ViewController: UITableViewController {
         commit.url = json["html_url"].stringValue
         
         let formatter = ISO8601DateFormatter()
-        commit.date = formatter.date(from: json["commit"]["commiter"]["date"].stringValue) ?? Date()
+        commit.date = formatter.date(from: json["commit"]["committer"]["date"].stringValue) ?? Date()
+        print(commit.date, json["commit"]["committer"]["date"].stringValue)
     }
     
     private func saveContext() {
@@ -63,6 +68,37 @@ class ViewController: UITableViewController {
                 print("An error occured while saving: \(error.localizedDescription)")
             }
         }
+    }
+    
+    private func loadSavedData() {
+        let request = Commit.createFetchRequest()
+        let sort = NSSortDescriptor(key: "date", ascending: false)
+        request.sortDescriptors = [sort]
+        
+        do {
+            commits = try container.viewContext.fetch(request)
+            print("Got \(commits.count) commits")
+            tableView.reloadData()
+        } catch  {
+            print("Fetch failed")
+        }
+    }
+    
+    // MARK: Table datasource
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return commits.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Commit", for: indexPath)
+        let commit = commits[indexPath.row]
+        cell.textLabel?.text = commit.message
+        cell.detailTextLabel?.text = commit.date.description
+        return cell
     }
 
 
