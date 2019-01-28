@@ -10,9 +10,11 @@ import UIKit
 import CoreData
 
 class ViewController: UITableViewController {
+    // Paul's note: add refresh controll!
     
     var container: NSPersistentContainer!
     var commits = [Commit]()
+    var commitPredicate: NSPredicate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +31,8 @@ class ViewController: UITableViewController {
 //        commit.date = Date()
         performSelector(inBackground: #selector(fetchCommits), with: nil) //Paul's note: compare with other background fetching techniques
         loadSavedData()
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Filter", style: .plain, target: self, action: #selector(changeFilter))
     }
     
     @objc func fetchCommits() { //Paul's note: make real error handling someday
@@ -60,7 +64,7 @@ class ViewController: UITableViewController {
         print(commit.date, json["commit"]["committer"]["date"].stringValue)
     }
     
-    private func saveContext() {
+    @objc private func saveContext() {
         if container.viewContext.hasChanges {
             do {
                 try container.viewContext.save()
@@ -70,11 +74,40 @@ class ViewController: UITableViewController {
         }
     }
     
+    @objc private func changeFilter() {
+        // Paul's note: change to segmented control with search item
+        let ac = UIAlertController(title: "Filter commits...", message: nil, preferredStyle: .actionSheet)
+        //1
+        ac.addAction(UIAlertAction(title: "Show only fixes", style: .default) { [unowned self] _ in
+            self.commitPredicate = NSPredicate(format: "message CONTAINS[c] 'fix'")
+            self.loadSavedData()
+        })
+        //2
+        ac.addAction(UIAlertAction(title: "Ignore Pull Requests", style: .default) { [unowned self] _ in
+            self.commitPredicate = NSPredicate(format: "NOT message BEGINSWITH 'Merge pull request'")
+            self.loadSavedData()
+        })
+        //3
+        ac.addAction(UIAlertAction(title: "Show only resent", style: .default) { [unowned self] _ in
+            let twelveHoursAgo = Date().addingTimeInterval(-43200)
+            self.commitPredicate = NSPredicate(format: "date > %@", twelveHoursAgo as NSDate)
+            self.loadSavedData()
+        })
+        //4
+        ac.addAction(UIAlertAction(title: "Show all commits", style: .default) { [unowned self] _ in
+            self.commitPredicate = nil
+            self.loadSavedData()
+        })
+        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(ac, animated: !UIAccessibility.isReduceMotionEnabled)
+        
+    }
+    
     private func loadSavedData() {
         let request = Commit.createFetchRequest()
         let sort = NSSortDescriptor(key: "date", ascending: false)
         request.sortDescriptors = [sort]
-        
+        request.predicate = commitPredicate
         do {
             commits = try container.viewContext.fetch(request)
             print("Got \(commits.count) commits")
