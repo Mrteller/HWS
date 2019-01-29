@@ -62,6 +62,31 @@ class ViewController: UITableViewController {
         let formatter = ISO8601DateFormatter()
         commit.date = formatter.date(from: json["commit"]["committer"]["date"].stringValue) ?? Date()
         print(commit.date, json["commit"]["committer"]["date"].stringValue)
+        
+        var commitAuthor: Author!
+        // see if this author exists already
+        let authorRequest = Author.createFetchRequest()
+        // Paul's note: Danger! - we might have authors with the same name. TODO: check if it is unique. if not we are about to mix them here.
+        authorRequest.predicate = NSPredicate(format: "name == %@", json["commit"]["committer"]["name"].stringValue)
+        //if let authors = try? container.viewContext.fetch(authorRequest) {
+        // Paul's note - this is safer. Entities are linked and are considered to be one context (view, background, other)
+        if let authors = try? commit.managedObjectContext!.fetch(authorRequest) {
+            if authors.count > 0 {
+                // we have this author already
+                assert(authors.count == 1, "DB inconsitency: too many authors with the same name")
+                commitAuthor = authors[0]
+            }
+        }
+        if commitAuthor == nil {
+            // we didn't find a saved author - create a new one
+            let author = Author(context: commit.managedObjectContext!) // Paul's note: again - it is better to use the same context tha related entity uses
+            author.name = json["commit"]["committer"]["name"].stringValue
+            author.email = json["commit"]["committer"]["email"].stringValue
+            commitAuthor = author
+        }
+        
+        // use the author, either saved or new
+        commit.author = commitAuthor
     }
     
     @objc private func saveContext() {
@@ -130,7 +155,7 @@ class ViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Commit", for: indexPath)
         let commit = commits[indexPath.row]
         cell.textLabel?.text = commit.message
-        cell.detailTextLabel?.text = commit.date.description
+        cell.detailTextLabel?.text = "By \(commit.author.name) on \(commit.date.description)"
         return cell
     }
 
