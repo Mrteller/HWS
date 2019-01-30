@@ -112,10 +112,15 @@ class ViewController: UITableViewController {
             self.commitPredicate = NSPredicate(format: "NOT message BEGINSWITH 'Merge pull request'")
             self.loadSavedData()
         })
-        //3
+        //3.1
         ac.addAction(UIAlertAction(title: "Show only resent", style: .default) { [unowned self] _ in
             let twelveHoursAgo = Date().addingTimeInterval(-43200)
             self.commitPredicate = NSPredicate(format: "date > %@", twelveHoursAgo as NSDate)
+            self.loadSavedData()
+        })
+        // 3.2
+        ac.addAction(UIAlertAction(title: "Show only Durian commits", style: .default) { [unowned self] _ in
+            self.commitPredicate = NSPredicate(format: "author.name == 'Joe Groff'")
             self.loadSavedData()
         })
         //4
@@ -158,7 +163,24 @@ class ViewController: UITableViewController {
         cell.detailTextLabel?.text = "By \(commit.author.name) on \(commit.date.description)"
         return cell
     }
-
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let vc = storyboard?.instantiateViewController(withIdentifier: "Detail") as? DetailViewController {
+            vc.detailItem = commits[indexPath.row] //Pauls note: better make it independent of Commits class
+            navigationController?.pushViewController(vc, animated: !UIAccessibility.isReduceMotionEnabled)
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let commit = commits[indexPath.row]
+            container.viewContext.delete(commit)
+            commits.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            
+            saveContext() //Pauls note: better try to save and delete only on success
+        }
+    }
 
 }
 
