@@ -36,7 +36,8 @@ class ViewController: UITableViewController {
     }
     
     @objc func fetchCommits() { //Paul's note: make real error handling someday
-        if let data = try? String(contentsOf: URL(string: "https://api.github.com/repos/apple/swift/commits?per_page=100")!) {
+        let newestCommitDate = getNewestCommitDate()
+        if let data = try? String(contentsOf: URL(string: "https://api.github.com/repos/apple/swift/commits?per_page=100&since=\(newestCommitDate)")!) {
             // give the data to SwiftlyJSON to parse
             let jsonCommits = JSON(parseJSON: data)
             // read the commits back out
@@ -52,6 +53,27 @@ class ViewController: UITableViewController {
                 self.loadSavedData()
             }
         }
+    }
+    
+    func getNewestCommitDate() -> String {
+        let formatter = ISO8601DateFormatter()
+        let newest = Commit.createFetchRequest()
+        let sort = NSSortDescriptor(key: "date", ascending: false)
+        
+        newest.sortDescriptors = [sort]
+        newest.fetchLimit = 1
+        // newest.propertiesToFetch = ["date"] find out what this is for
+        // print("Date.distantPast \(Date.distantPast) vs Date(timeIntervalSince1970:) \(Date(timeIntervalSince1970: 0))")
+        if let commits = try? container.viewContext.fetch(newest) {
+            if commits.count > 0 {
+                print(formatter.string(from: commits[0].date.addingTimeInterval(1)))
+                return formatter.string(from: commits[0].date.addingTimeInterval(1))
+            }
+        }
+        return formatter.string(from: Date(timeIntervalSince1970: 0))
+
+        
+        
     }
     
     private func configure(commit: Commit, usingJSON json: JSON) {
