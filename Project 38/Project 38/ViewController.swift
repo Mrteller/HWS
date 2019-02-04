@@ -17,6 +17,10 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
     var commitPredicate: NSPredicate?
     var fetchedResultsController: NSFetchedResultsController<Commit>!
 
+    @IBAction func refresh(_ sender: UIRefreshControl) {
+        performSelector(inBackground: #selector(fetchCommits), with: nil) //Paul's note: better pass newestCommitDate as argument
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         container = NSPersistentContainer(name: "Project38") // load from model file Project38.xcdatamodeld
@@ -31,7 +35,7 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
 //        commit.url = "http://www.example.com"
 //        commit.date = Date()
         performSelector(inBackground: #selector(fetchCommits), with: nil) //Paul's note: compare with other background fetching techniques
-        loadSavedData()
+        loadSavedData() //Paul's note: duplicate - done in fetchCommits()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Filter", style: .plain, target: self, action: #selector(changeFilter))
     }
@@ -45,14 +49,17 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
             let jsonCommitArray = jsonCommits.arrayValue
             print("Received \(jsonCommitArray.count) new commits.")
             
-            DispatchQueue.main.async { [unowned self] in
+            DispatchQueue.main.async { [unowned self] in ////Paul's note: Do wew really need to dispatch back or we can just thread-protect block?
                 for jsonCommit in jsonCommitArray {
                     let commit = Commit(context: self.container.viewContext)
                     self.configure(commit: commit, usingJSON: jsonCommit)
                 }
                 self.saveContext() // Paul's note: that's right: viewContext is main thread context and should be saved (and operated) on main thread only. Even Asycncroniously.
                 self.loadSavedData()
+                self.refreshControl?.endRefreshing()
             }
+        } else {
+            self.refreshControl?.endRefreshing()
         }
     }
     

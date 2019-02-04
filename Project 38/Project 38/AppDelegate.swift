@@ -5,6 +5,8 @@
 //  Created by Paul on 24.01.2019.
 //  Copyright © 2019 Paul. All rights reserved.
 //
+// Known bugs:
+// Crash if deleting sole row in section
 
 import UIKit
 
