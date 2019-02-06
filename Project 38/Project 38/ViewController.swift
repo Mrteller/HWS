@@ -43,7 +43,7 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
     }
     
     @objc func fetchCommits() { //Paul's note: make real error handling someday
-        let newestCommitDate = getNewestCommitDate()
+        let newestCommitDate = getNewestCommitDate() // is run in background, but uses viewContext (which is a main ViewContext)
         if let data = try? String(contentsOf: URL(string: "https://api.github.com/repos/apple/swift/commits?per_page=100&since=\(newestCommitDate)")!) {
             // give the data to SwiftlyJSON to parse
             let jsonCommits = JSON(parseJSON: data)
@@ -86,16 +86,18 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
         newest.fetchLimit = 1
         // newest.propertiesToFetch = ["date"] find out what this is for
         // print("Date.distantPast \(Date.distantPast) vs Date(timeIntervalSince1970:) \(Date(timeIntervalSince1970: 0))")
-        if let commits = try? container.viewContext.fetch(newest) {
-            if commits.count > 0 {
-                print(formatter.string(from: commits[0].date.addingTimeInterval(1)))
-                return formatter.string(from: commits[0].date.addingTimeInterval(1))
+        
+        //We could wrap everything inside (we can't return from block, so use a local var result and return it when done
+//        container.viewContext.perform {
+            //if let commits = try? container.viewContext.fetch(newest) {
+            if let commits = try? newest.execute() { // Paul's note fetch will choose a proper NSManagedContext for whatever que we are in
+                if commits.count > 0 {
+                    print(formatter.string(from: commits[0].date.addingTimeInterval(1)))
+                    return formatter.string(from: commits[0].date.addingTimeInterval(1))
+                }
             }
-        }
+//        }
         return formatter.string(from: Date(timeIntervalSince1970: 0))
-
-        
-        
     }
     
     private func configure(commit: Commit, usingJSON json: JSON) {
@@ -111,10 +113,12 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
         // see if this author exists already
         let authorRequest = Author.createFetchRequest()
         // Paul's note: Danger! - we might have authors with the same name. TODO: check if it is unique. if not we are about to mix them here.
-        authorRequest.predicate = NSPredicate(format: "name == %@", json["commit"]["committer"]["name"].stringValue)
+        //authorRequest.predicate = NSPredicate(format: "name == %@ and email == %@", json["commit"]["committer"]["name"].stringValue, json["commit"]["committer"]["email"].stringValue)
+        authorRequest.predicate = NSPredicate(format: "name == %@",json["commit"]["committer"]["name"].stringValue)
         //if let authors = try? container.viewContext.fetch(authorRequest) {
         // Paul's note - this is safer. Entities are linked and are considered to be one context (view, background, other)
         if let authors = try? commit.managedObjectContext!.fetch(authorRequest) {
+        // if let authors = try? authorRequest.execute() // Paul's note - this good too. execute() will use a proper context (according to the current que)
             if authors.count > 0 {
                 // we have this author already
                 assert(authors.count == 1, "DB inconsitency: too many authors with the same name")
