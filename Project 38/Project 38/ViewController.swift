@@ -13,6 +13,8 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
     // Paul's note: add refresh controll!
     
     var container: NSPersistentContainer!
+    // Paul's note: in real app we should leave a container var in appDelegate and make a shared one
+    
     // var commits = [Commit]()
     var commitPredicate: NSPredicate?
     var fetchedResultsController: NSFetchedResultsController<Commit>!
@@ -49,7 +51,20 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
             let jsonCommitArray = jsonCommits.arrayValue
             print("Received \(jsonCommitArray.count) new commits.")
             
-            DispatchQueue.main.async { [unowned self] in ////Paul's note: Do wew really need to dispatch back or we can just thread-protect block?
+            //Paul's note: Do wew really need to dispatch back or we can just thread-protect block?
+            // container.viewContext.perform { }
+            // the other thing we could instead of DispatchQueue.main.async is:
+//            container.performBackgroundTask { [unowned self] backgroundContext in
+//                for jsonCommit in jsonCommitArray {
+//                    let commit = Commit(context: backgroundContext)
+//                    self.configure(commit: commit, usingJSON: jsonCommit)
+//                }
+//                try? backgroundContext.save()
+//                self.loadSavedData()
+//                self.refreshControl?.endRefreshing()
+//            }
+            DispatchQueue.main.async { [unowned self] in
+                
                 for jsonCommit in jsonCommitArray {
                     let commit = Commit(context: self.container.viewContext)
                     self.configure(commit: commit, usingJSON: jsonCommit)
