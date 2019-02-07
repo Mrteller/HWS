@@ -5,6 +5,7 @@
 //  Created by Paul on 05.02.2019.
 //  Copyright © 2019 Paul. All rights reserved.
 //
+//  Known bugs: if server redirects we get nothing, if we don't type https:// we get nothing
 
 import UIKit
 import WebKit
@@ -45,7 +46,26 @@ final class ViewController: UIViewController, WKNavigationDelegate, UITextFieldD
     
     @objc private func deleteWebView() {
         // safely unwrap our WebView
-    
+        if let webView = activeWebView {
+            if let index = stackView.arrangedSubviews.firstIndex(of: webView) {
+            // we found the current webview in the stack view
+                stackView.removeArrangedSubview(webView)
+                webView.removeFromSuperview()
+                
+                if stackView.arrangedSubviews.count == 0 {
+                    // go back to our default UI
+                    setDefaultTitle()
+                } else {
+                    var currentIndex = Int(index)
+                    if index == stackView.arrangedSubviews.count { //What's the difference between count and endIndex
+                        currentIndex = index.advanced(by: -1)
+                    }
+                    if let newSelectedWebView = stackView.arrangedSubviews[currentIndex] as? WKWebView {
+                        selectWebView(newSelectedWebView)
+                    }
+                }
+            }
+        }
     }
     
     private func selectWebView(_ webView: WKWebView) {
@@ -54,6 +74,7 @@ final class ViewController: UIViewController, WKNavigationDelegate, UITextFieldD
         }
         activeWebView = webView
         webView.layer.borderWidth = 3
+        updateUI(for: webView)
     }
     
     @objc private func webViewTapped(_ recognizer: UITapGestureRecognizer) {
@@ -77,6 +98,26 @@ final class ViewController: UIViewController, WKNavigationDelegate, UITextFieldD
         }
         textField.resignFirstResponder()
         return true
+    }
+    
+    // Paul's note: this can be also done in storyboard
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        if traitCollection.horizontalSizeClass == .compact {
+            stackView.axis = .vertical
+        } else {
+            stackView.axis = .horizontal
+        }
+    }
+    
+    private func updateUI(for webView: WKWebView) {
+        title = webView.title
+        addressBar.text = webView.url?.absoluteString
+    }
+    
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        if webView == activeWebView {
+            updateUI(for: webView)
+        }
     }
     
 }
