@@ -57,8 +57,8 @@ final class ViewController: UIViewController, WKNavigationDelegate, UITextFieldD
                     setDefaultTitle()
                 } else {
                     var currentIndex = Int(index)
-                    if index == stackView.arrangedSubviews.count { //What's the difference between count and endIndex
-                        currentIndex = index.advanced(by: -1)
+                    if currentIndex == stackView.arrangedSubviews.count { //What's the difference between count and endIndex
+                        currentIndex -= 1
                     }
                     if let newSelectedWebView = stackView.arrangedSubviews[currentIndex] as? WKWebView {
                         selectWebView(newSelectedWebView)
