@@ -90,7 +90,7 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
         //We could wrap everything inside (we can't return from block, so use a local var result and return it when done
 //        container.viewContext.perform {
             //if let commits = try? container.viewContext.fetch(newest) {
-            if let commits = try? newest.execute() { // Paul's note fetch will choose a proper NSManagedContext for whatever que we are in
+        if let commits = try? newest.execute() { // Paul's note: fetch with execute will choose a proper NSManagedContext for whatever que we are in
                 if commits.count > 0 {
                     print(formatter.string(from: commits[0].date.addingTimeInterval(1)))
                     return formatter.string(from: commits[0].date.addingTimeInterval(1))
