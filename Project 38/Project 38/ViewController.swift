@@ -95,10 +95,10 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
         // There are several ways to fix this:
         // 1 We could wrap everything inside 'perform' (we can't return from block, so we can use a local var to store theresult and return it when done).
         // container.viewContext.perform {
-        // 2 Pass the apropriate context as argumet
+        // 2 Pass the appropriate context as argument
         // 3 Rewrite the logic and make use of 'container.performBackgroundTask' instead of 'performSelector(inBackground:)'(best option IMHO)
         // This will also help to move DM filling off the Main queue!
-        // 4 Manually dispach back to the Main
+        // 4 Manually dispatch back to the Main
         // 5 Use 'execute' (the smallest change)
         if let commits = try? newest.execute() { // Paul's note: fetching with execute will choose a proper NSManagedContext for whatever queue we are in.
                 if commits.count > 0 {
