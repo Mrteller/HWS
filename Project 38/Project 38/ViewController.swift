@@ -10,11 +10,11 @@ import UIKit
 import CoreData
 
 class ViewController: UITableViewController, NSFetchedResultsControllerDelegate {
-    // Paul's note: add refresh controll!
-    
+    // Paul's note: add refresh controll! (Done)
+
     var container: NSPersistentContainer!
     // Paul's note: in real app we should leave a container var in appDelegate and make a shared one
-    
+
     // var commits = [Commit]()
     var commitPredicate: NSPredicate?
     var fetchedResultsController: NSFetchedResultsController<Commit>!
@@ -42,7 +42,7 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Filter", style: .plain, target: self, action: #selector(changeFilter))
     }
     
-    @objc func fetchCommits() { //Paul's note: make real error handling someday
+    @objc func fetchCommits() { // Paul's note: make real error handling someday
         let newestCommitDate = getNewestCommitDate() // is run in background, but uses viewContext (which is a main ViewContext)
         if let data = try? String(contentsOf: URL(string: "https://api.github.com/repos/apple/swift/commits?per_page=100&since=\(newestCommitDate)")!) {
             // give the data to SwiftlyJSON to parse
@@ -51,9 +51,9 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
             let jsonCommitArray = jsonCommits.arrayValue
             print("Received \(jsonCommitArray.count) new commits.")
             
-            //Paul's note: Do wew really need to dispatch back or we can just thread-protect block?
+            //Paul's note: Do we really need to dispatch back or we can just thread-protect block?
             // container.viewContext.perform { }
-            // the other thing we could instead of DispatchQueue.main.async is:
+            // the other thing we could do instead of DispatchQueue.main.async is:
 //            container.performBackgroundTask { [unowned self] backgroundContext in
 //                for jsonCommit in jsonCommitArray {
 //                    let commit = Commit(context: backgroundContext)
@@ -84,13 +84,23 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
         let sort = NSSortDescriptor(key: "date", ascending: false)
         newest.sortDescriptors = [sort]
         newest.fetchLimit = 1
-        // newest.propertiesToFetch = ["date"] find out what this is for
+        // newest.propertiesToFetch = ["date"] find out what this is for and check if we can avoid fetching thing we don't need
         // print("Date.distantPast \(Date.distantPast) vs Date(timeIntervalSince1970:) \(Date(timeIntervalSince1970: 0))")
-        
-        //We could wrap everything inside (we can't return from block, so use a local var result and return it when done
-//        container.viewContext.perform {
-            //if let commits = try? container.viewContext.fetch(newest) {
-        if let commits = try? newest.execute() { // Paul's note: fetch with execute will choose a proper NSManagedContext for whatever que we are in
+
+        // if let commits = try? container.viewContext.fetch(newest) {
+        #if DEBUG
+        print("Fetching or executing request on \(Thread.isMainThread ? "Main" : "Background") thread :\r\(#file) (\(#line)) \(#function)")
+        #endif
+        // FIXME: getNewestCommitDate gets called from fetchCommits which in its turn is run in background. We are not allowed to use viewContext off the main queue ("view" is for UI what is for main tread).
+        // There are several ways to fix this:
+        // 1 We could wrap everything inside 'perform' (we can't return from block, so we can use a local var to store theresult and return it when done).
+        // container.viewContext.perform {
+        // 2 Pass the apropriate context as argumet
+        // 3 Rewrite the logic and make use of 'container.performBackgroundTask' instead of 'performSelector(inBackground:)'(best option IMHO)
+        // This will also help to move DM filling off the Main queue!
+        // 4 Manually dispach back to the Main
+        // 5 Use 'execute' (the smallest change)
+        if let commits = try? newest.execute() { // Paul's note: fetching with execute will choose a proper NSManagedContext for whatever queue we are in.
                 if commits.count > 0 {
                     print(formatter.string(from: commits[0].date.addingTimeInterval(1)))
                     return formatter.string(from: commits[0].date.addingTimeInterval(1))
