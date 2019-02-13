@@ -13,6 +13,7 @@
 		DA1B29AE220F732100BB581F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA1B29AD220F732100BB581F /* Assets.xcassets */; };
 		DA1B29B1220F732100BB581F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA1B29AF220F732100BB581F /* LaunchScreen.storyboard */; };
 		DA1B29B9220F754700BB581F /* RecordWhistleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1B29B8220F754700BB581F /* RecordWhistleViewController.swift */; };
+		DA1B29BF22146B6E00BB581F /* SelectGenreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1B29BE22146B6E00BB581F /* SelectGenreViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		DA1B29B0220F732100BB581F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DA1B29B2220F732100BB581F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DA1B29B8220F754700BB581F /* RecordWhistleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordWhistleViewController.swift; sourceTree = "<group>"; };
+		DA1B29BE22146B6E00BB581F /* SelectGenreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectGenreViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 		DA1B29A5220F731A00BB581F /* Project 33 */ = {
 			isa = PBXGroup;
 			children = (
+				DA1B29BE22146B6E00BB581F /* SelectGenreViewController.swift */,
 				DA1B29A6220F731A00BB581F /* AppDelegate.swift */,
 				DA1B29A8220F731A00BB581F /* ViewController.swift */,
 				DA1B29B8220F754700BB581F /* RecordWhistleViewController.swift */,
@@ -140,6 +143,7 @@
 			files = (
 				DA1B29A9220F731A00BB581F /* ViewController.swift in Sources */,
 				DA1B29A7220F731A00BB581F /* AppDelegate.swift in Sources */,
+				DA1B29BF22146B6E00BB581F /* SelectGenreViewController.swift in Sources */,
 				DA1B29B9220F754700BB581F /* RecordWhistleViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
