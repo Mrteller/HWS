@@ -11,7 +11,7 @@ import UIKit
 class SelectGenreViewController: UITableViewController {
     // Paul's note: an enum would fit better here, probably. Especially for multilingual app.
     static let genres = ["Unknown", "Blues", "Classical", "Electronic", "Jazz", "Metal", "Pop", "Reggae", "RnB", "Rock", "Soul"]
-    // We could do without this long line but we would have to generate localized strings manually then. Which is cumbersome.
+    // We could go without this long line but we would have to generate localized strings manually then. Which is cumbersome.
     // Now Xcode will generate them for us fo sure.
     static let genresTranslations = [NSLocalizedString("Unknown", comment: ""), NSLocalizedString("Blues", comment: ""), NSLocalizedString("Classical", comment: ""), NSLocalizedString("Electronic", comment: ""), NSLocalizedString("Jazz", comment: ""), NSLocalizedString("Metal", comment: ""), NSLocalizedString("Pop", comment: ""), NSLocalizedString("Reggae", comment: ""), NSLocalizedString("RnB", comment: ""), NSLocalizedString("Rock", comment: ""), NSLocalizedString("Soul", comment: "")]
     
@@ -25,14 +25,29 @@ class SelectGenreViewController: UITableViewController {
     }
     
     // [Option 2] Dictionary [Enum : String]
-    enum Genres: String, CaseIterable {
+    enum GenresOrig: String, CaseIterable {
         case unknown, blues, classical, electronic, jazz, metal, pop, reggae, rnB, rock, soul
     }
 
     static let genresLocalized = Dictionary(uniqueKeysWithValues: zip(Genres.allCases, Genres.allCases.map{ NSLocalizedString($0.rawValue, comment: "") }))
     
-    // [Option 3] Enum with associated value
-    // unimplemented yet
+    static let genreByLocalizedName = Dictionary(uniqueKeysWithValues: zip(Genres.allCases.map{ NSLocalizedString($0.rawValue, comment: "") }, Genres.allCases))
+    
+    // [Option 3] Enum with self decoding func (rawValue version).
+    enum Genres: String, CaseIterable {
+        case unknown = "Unknown"
+        case blues = "Blues"
+        case classical = "Classical"
+        
+        func localizedName() -> String {
+            return NSLocalizedString(self.rawValue, comment: "")
+        }
+        
+        init?(index: Int) {
+            guard Genres.allCases.indices.contains(index) else { return }
+            self = Genres.allCases[index]
+        }
+    }
     
     // [Option 4] Custom struct with resolver as func. See implementation in extension.
     static let genresLocalizedStruct = EnumMap<Genres, String> { genre in  // Do not include type name in var name normally
@@ -41,6 +56,15 @@ class SelectGenreViewController: UITableViewController {
         // return genresTranslations[genre.hashValue] // if they math
     }
 
+    // [Option 5] Pure enum but it allows only single translation
+    enum GenresForSingeForeignLanguage: String {
+        case unknown = "Неизвестный"
+        case blues = "Блюз"
+        case classical = "Классика"
+        // If only literals can serve as raw valuse
+    }
+    
+    // [Option 5] Enum with self initialized (or mutated) associated value
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,9 +88,12 @@ class SelectGenreViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-
-        cell.textLabel?.text = SelectGenreViewController.genres[indexPath.row]
-        // cell.tag = type(of: self).genresM[indexPath.row]
+        let genre = type(of: self).Genres(index: indexPath.row) 
+        cell.textLabel?.text = genre.localizedName()
+        cell.tag = indexPath.row // ???: It used to be genre.hashValue
+        #if DEBUG
+        print("genre.hashValue = \(cell.tag) and indexPath.row = \(indexPath.row)")
+        #endif
         cell.accessoryType = .disclosureIndicator
 
         return cell
@@ -74,7 +101,7 @@ class SelectGenreViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) {
-            let genre =  cell.textLabel?.text
+            let genre = Genres(index: cell.tag)
         }
     }
 
