@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DA17F55C221B0C17006400E9 /* AddCommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA17F55B221B0C17006400E9 /* AddCommentsViewController.swift */; };
 		DA1B29A7220F731A00BB581F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1B29A6220F731A00BB581F /* AppDelegate.swift */; };
 		DA1B29A9220F731A00BB581F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1B29A8220F731A00BB581F /* ViewController.swift */; };
 		DA1B29AC220F731A00BB581F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA1B29AA220F731A00BB581F /* Main.storyboard */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DA17F55B221B0C17006400E9 /* AddCommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCommentsViewController.swift; sourceTree = "<group>"; };
 		DA1B29A3220F731A00BB581F /* Project 33.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project 33.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA1B29A6220F731A00BB581F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DA1B29A8220F731A00BB581F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 				DA1B29A6220F731A00BB581F /* AppDelegate.swift */,
 				DA1B29A8220F731A00BB581F /* ViewController.swift */,
 				DA1B29B8220F754700BB581F /* RecordWhistleViewController.swift */,
+				DA17F55B221B0C17006400E9 /* AddCommentsViewController.swift */,
 				DA1B29AA220F731A00BB581F /* Main.storyboard */,
 				DA1B29AD220F732100BB581F /* Assets.xcassets */,
 				DA1B29AF220F732100BB581F /* LaunchScreen.storyboard */,
@@ -142,6 +145,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA1B29A9220F731A00BB581F /* ViewController.swift in Sources */,
+				DA17F55C221B0C17006400E9 /* AddCommentsViewController.swift in Sources */,
 				DA1B29A7220F731A00BB581F /* AppDelegate.swift in Sources */,
 				DA1B29BF22146B6E00BB581F /* SelectGenreViewController.swift in Sources */,
 				DA1B29B9220F754700BB581F /* RecordWhistleViewController.swift in Sources */,

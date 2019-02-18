@@ -35,16 +35,16 @@ class SelectGenreViewController: UITableViewController {
     
     // [Option 3] Enum with self decoding func (rawValue version).
     enum Genres: String, CaseIterable {
-        case unknown = "Unknown"
-        case blues = "Blues"
-        case classical = "Classical"
+        case unknown = "Unknown"        // 0
+        case blues = "Blues"            // 1
+        case classical = "Classical"    // 2
         
         func localizedName() -> String {
             return NSLocalizedString(self.rawValue, comment: "")
         }
         
         init?(index: Int) {
-            guard Genres.allCases.indices.contains(index) else { return }
+            guard Genres.allCases.indices.contains(index) else { return nil }
             self = Genres.allCases[index]
         }
     }
@@ -65,7 +65,30 @@ class SelectGenreViewController: UITableViewController {
     }
     
     // [Option 5] Enum with self initialized (or mutated) associated value
+    enum GenresAssociated: CaseIterable, RawRepresentable, Equatable {
+        case unknown(String)
+        case blues(String)
+        case classical(String)
+        // Implementing CaseIterable
+        typealias AllCases = [GenresAssociated]
+        // Enums can have no storage, but the class they are in CAN. Note 'static' in declaratin
+        static var allCases: [GenresAssociated] = [.unknown(""), .blues(""), .classical("")]
+        
 
+        typealias RawValue = Int
+        var rawValue: Int {
+
+            // MARK: This causes a crash for unknown reason
+            return GenresAssociated.allCases.firstIndex(where: {  if case self = $0 { return true } else { return false } } ) ?? 0
+        }
+        init?(rawValue: Int) {
+            guard GenresAssociated.allCases.indices.contains(rawValue) else { return nil }
+            self = GenresAssociated.allCases[rawValue]
+        }
+        // And we got Equatable 'for free'
+    }
+    
+            // ???:
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -88,20 +111,24 @@ class SelectGenreViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        let genre = type(of: self).Genres(index: indexPath.row) 
-        cell.textLabel?.text = genre.localizedName()
-        cell.tag = indexPath.row // ???: It used to be genre.hashValue
+        if let genre = type(of: self).Genres(index: indexPath.row) {
+            cell.textLabel?.text = genre.localizedName()
+            cell.tag = indexPath.row // ???: It used to be genre.hashValue
+        }
         #if DEBUG
-        print("genre.hashValue = \(cell.tag) and indexPath.row = \(indexPath.row)")
+        print("cell.tag = \(cell.tag) and indexPath.row = \(indexPath.row)")
         #endif
         cell.accessoryType = .disclosureIndicator
-
+        
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) {
-            let genre = Genres(index: cell.tag)
+            let genre = (Genres(index: cell.tag) ?? Genres.unknown)
+            let vc = AddCommentsViewController()
+            vc.genre = genre
+            navigationController?.pushViewController(vc, animated: true)
         }
     }
 
