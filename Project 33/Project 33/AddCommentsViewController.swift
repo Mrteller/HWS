@@ -42,7 +42,7 @@ class AddCommentsViewController: UIViewController, UITextViewDelegate {
     
     @objc private func submitTapped() {
         let vc = SubmitViewController()
-        vc.genre = genre
+        vc.genre = genre.rawValue // TODO: consider using enum itself instead of rawValue
         if comments.text == placeholder {
             vc.comments = ""
         } else {
