@@ -8,6 +8,7 @@
 // TODO: check network avalability, cellurar usage
 
 import UIKit
+import CloudKit
 
 class SubmitViewController: UIViewController {
     
@@ -56,7 +57,43 @@ class SubmitViewController: UIViewController {
         navigationItem.setHidesBackButton(true, animated: true) //Same as hidesBackButton but animated
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        doSubmission() // TODO: add and process return value: success: Bool
+    }
 
+    @discardableResult private func doSubmission() -> Bool {
+        let whistleRecord = CKRecord(recordType: "Whistles")
+        whistleRecord["genre"] = genre // as CKRecordValue
+        whistleRecord["comments"] = comments // as CKRecordValue
+        
+        let audioURL = RecordWhistleViewController.getWhistleURL()
+        let whistleAsset = CKAsset(fileURL: audioURL)
+        whistleRecord["audio"] = whistleAsset
+        
+        CKContainer.default().publicCloudDatabase.save(whistleRecord) {[unowned self] record, error in
+            DispatchQueue.main.async {
+                self.spinner.stopAnimating()
+                if let error = error {
+                    self.status.text = "Error: \(error.localizedDescription)"
+                } else {
+                    self.view.backgroundColor = UIColor(red: 0, green: 0.6, blue: 0, alpha: 1)
+                    self.status.text = "Done"
+                    ViewController.isDirty = true
+                }
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(self.doneTapped))
+            }
+        }
+        
+        return true // success
+    }
+    @objc private func doneTapped() {
+        _ = navigationController?.popToRootViewController(animated: true) // nice NVC method
+        doSubmission()
+    }
+    
+    
+    
     /*
     // MARK: - Navigation
 
