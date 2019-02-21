@@ -8,6 +8,7 @@
 // TODO: Update dynamic font with Notification
 
 import UIKit
+import CloudKit
 
 class AddCommentsViewController: UIViewController, UITextViewDelegate {
     
@@ -25,7 +26,7 @@ class AddCommentsViewController: UIViewController, UITextViewDelegate {
         comments.font = UIFont.preferredFont(forTextStyle: .body)
         view.addSubview(comments)
         
-        comments.leftAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        comments.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         comments.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         comments.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         comments.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
@@ -38,6 +39,11 @@ class AddCommentsViewController: UIViewController, UITextViewDelegate {
         title = "Comments"
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .plain, target: self, action: #selector(submitTapped))
         comments.text = placeholder
+        // TODO: check permissions and account status
+//        CKContainer.default().status(forApplicationPermission: .userDiscoverability) { ss ,err in
+//
+//        }
+//        CKContainer.default().accountStatus(completionHandler: <#T##(CKAccountStatus, Error?) -> Void#>)
     }
     
     @objc private func submitTapped() {

@@ -63,6 +63,12 @@ class SubmitViewController: UIViewController {
     }
 
     @discardableResult private func doSubmission() -> Bool {
+        //        CKContainer.default().accountStatus { accountStatus, error in
+        //            DispatchQueue.main.sync {
+        //                print(accountStatus, error?.localizedDescription ?? "No errors")
+        //            }
+        //        }
+        
         let whistleRecord = CKRecord(recordType: "Whistles")
         whistleRecord["genre"] = genre // as CKRecordValue
         whistleRecord["comments"] = comments // as CKRecordValue
@@ -70,7 +76,6 @@ class SubmitViewController: UIViewController {
         let audioURL = RecordWhistleViewController.getWhistleURL()
         let whistleAsset = CKAsset(fileURL: audioURL)
         whistleRecord["audio"] = whistleAsset
-        
         CKContainer.default().publicCloudDatabase.save(whistleRecord) {[unowned self] record, error in
             DispatchQueue.main.async {
                 self.spinner.stopAnimating()
@@ -82,14 +87,14 @@ class SubmitViewController: UIViewController {
                     ViewController.isDirty = true
                 }
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(self.doneTapped))
+                print(#function, error?.localizedDescription ?? "No errors")
             }
         }
-        
         return true // success
     }
+    
     @objc private func doneTapped() {
         _ = navigationController?.popToRootViewController(animated: true) // nice NVC method
-        doSubmission()
     }
     
     

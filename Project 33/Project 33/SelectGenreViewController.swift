@@ -38,6 +38,14 @@ class SelectGenreViewController: UITableViewController {
         case unknown = "Unknown"        // 0
         case blues = "Blues"            // 1
         case classical = "Classical"    // 2
+        case electronic = "Electronic"
+        case jazz = "Jazz"
+        case metal = "Metal"
+        case pop = "Pop"
+        case reggae = "Reggae"
+        case rnB = "RnB"
+        case rock = "Rock"
+        case soul = "Soul"
         
         func localizedName() -> String {
             return NSLocalizedString(self.rawValue, comment: "")
