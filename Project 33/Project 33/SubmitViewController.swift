@@ -81,6 +81,20 @@ class SubmitViewController: UIViewController {
                 self.spinner.stopAnimating()
                 if let error = error {
                     self.status.text = "Error: \(error.localizedDescription)"
+                    if let skError = error as? CKError {
+                        switch (skError.code) {
+                        case .networkUnavailable:
+                            print("Please check network \(skError.localizedDescription)")
+                        case .networkFailure:
+                            print("Network error occured. Retry in \(skError.retryAfterSeconds ?? 5) seconds")
+                        case .requestRateLimited:
+                            print("Too many requests. Retry in \(skError.retryAfterSeconds ?? 5) seconds")
+                        case .notAuthenticated:
+                            print("Please, log in to your account")
+                        default:
+                            break
+                        }
+                    }
                 } else {
                     self.view.backgroundColor = UIColor(red: 0, green: 0.6, blue: 0, alpha: 1)
                     self.status.text = "Done"

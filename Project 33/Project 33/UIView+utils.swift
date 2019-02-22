@@ -21,3 +21,17 @@ extension UIView {
 
     }
 }
+
+private extension UIView {
+    
+    func fillSuperview() {
+        guard let aSuperView = superview else { return }
+        translatesAutoresizingMaskIntoConstraints = false
+        
+        topAnchor.constraint(equalTo: aSuperView.topAnchor).isActive = true
+        trailingAnchor.constraint(equalTo: aSuperView.trailingAnchor).isActive = true
+        leadingAnchor.constraint(equalTo: aSuperView.leadingAnchor).isActive = true
+        bottomAnchor.constraint(equalTo: aSuperView.bottomAnchor).isActive = true
+    }
+    
+}
