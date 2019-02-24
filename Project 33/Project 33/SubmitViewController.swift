@@ -86,7 +86,19 @@ class SubmitViewController: UIViewController {
                         case .networkUnavailable:
                             print("Please check network \(skError.localizedDescription)")
                         case .networkFailure:
-                            print("Network error occured. Retry in \(skError.retryAfterSeconds ?? 5) seconds")
+                            print("Network error occured.")
+                            if let recommendedRetryInteval = skError.retryAfterSeconds {
+                            print("Will retry in \(recommendedRetryInteval) sec.")
+                            DispatchQueue.main.async {
+                                _ = Timer.init(timeInterval: recommendedRetryInteval, repeats: false, block: { timer in
+                                    timer.invalidate()
+                                    // self?.doSubmission() // recursion is OK too if we take care
+                                    // or just one more try
+                                    CKContainer.default().publicCloudDatabase.save(whistleRecord) { _,_ in  }
+                                    // Careful, we are capturing whistleRecord
+                                })
+                            }
+                            }
                         case .requestRateLimited:
                             print("Too many requests. Retry in \(skError.retryAfterSeconds ?? 5) seconds")
                         case .notAuthenticated:

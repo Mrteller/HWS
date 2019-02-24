@@ -7,15 +7,34 @@
 //
 
 import UIKit
+import CloudKit
 
-class ViewController: UIViewController {
+class ViewController: UITableViewController {
     static var isDirty = true
+    var whistles = [Whistle]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "What's that Whistle?"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWhistle))
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Home", style: .plain, target: nil, action: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        // Paul's note: we better handle all selected row, not just one
+        if let indexPaths = tableView.indexPathsForSelectedRows {
+            indexPaths.forEach { indexPath in
+                tableView.deselectRow(at: indexPath, animated: true)
+            }
+        }
+        
+        if ViewController.isDirty {
+            loadWhistles()
+        }
+        
+    }
+    
+    func loadWhistles() {
         
     }
 

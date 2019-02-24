@@ -139,6 +139,9 @@ class RecordWhistleViewController: UIViewController, AVAudioRecorderDelegate {
             recordButton.setTitle("Tap to Record", for: .normal)
             let ac = UIAlertController(title: "Record failed", message: "There was a problem recording your whistle; please try again", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default))
+            ac.modalTransitionStyle = .flipHorizontal
+            // ac.modalPresentationStyle = .formSheet
+            present(ac, animated: true)
         }
     }
     
@@ -156,6 +159,9 @@ class RecordWhistleViewController: UIViewController, AVAudioRecorderDelegate {
         } catch {
             let ac = UIAlertController(title: "Playback failed", message: "There was a problem playing your whistle; please try re-recording", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default))
+            ac.modalTransitionStyle = .flipHorizontal
+            // ac.modalPresentationStyle = .formSheet
+            present(ac, animated: true)
         }
     }
     
