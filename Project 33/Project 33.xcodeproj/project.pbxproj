@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		DA019DF222233E0400117F30 /* Whistle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA019DF122233E0400117F30 /* Whistle.swift */; };
 		DA019DF42224790200117F30 /* ResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA019DF32224790200117F30 /* ResultsViewController.swift */; };
+		DA019DF622265A2D00117F30 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA019DF522265A2D00117F30 /* Constants.swift */; };
 		DA17F55C221B0C17006400E9 /* AddCommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA17F55B221B0C17006400E9 /* AddCommentsViewController.swift */; };
 		DA17F55E221C5A94006400E9 /* SubmitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA17F55D221C5A94006400E9 /* SubmitViewController.swift */; };
 		DA17F560221C625E006400E9 /* UIView+utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA17F55F221C625E006400E9 /* UIView+utils.swift */; };
@@ -25,6 +26,7 @@
 /* Begin PBXFileReference section */
 		DA019DF122233E0400117F30 /* Whistle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Whistle.swift; sourceTree = "<group>"; };
 		DA019DF32224790200117F30 /* ResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsViewController.swift; sourceTree = "<group>"; };
+		DA019DF522265A2D00117F30 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		DA17F55B221B0C17006400E9 /* AddCommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCommentsViewController.swift; sourceTree = "<group>"; };
 		DA17F55D221C5A94006400E9 /* SubmitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitViewController.swift; sourceTree = "<group>"; };
 		DA17F55F221C625E006400E9 /* UIView+utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+utils.swift"; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 				DA1B29B8220F754700BB581F /* RecordWhistleViewController.swift */,
 				DA17F55B221B0C17006400E9 /* AddCommentsViewController.swift */,
 				DA17F55F221C625E006400E9 /* UIView+utils.swift */,
+				DA019DF522265A2D00117F30 /* Constants.swift */,
 				DA17F55D221C5A94006400E9 /* SubmitViewController.swift */,
 				DA1B29AA220F731A00BB581F /* Main.storyboard */,
 				DA019DF122233E0400117F30 /* Whistle.swift */,
@@ -183,6 +186,7 @@
 				DA17F560221C625E006400E9 /* UIView+utils.swift in Sources */,
 				DA17F55C221B0C17006400E9 /* AddCommentsViewController.swift in Sources */,
 				DA1B29A7220F731A00BB581F /* AppDelegate.swift in Sources */,
+				DA019DF622265A2D00117F30 /* Constants.swift in Sources */,
 				DA019DF42224790200117F30 /* ResultsViewController.swift in Sources */,
 				DA1B29BF22146B6E00BB581F /* SelectGenreViewController.swift in Sources */,
 				DA17F55E221C5A94006400E9 /* SubmitViewController.swift in Sources */,
