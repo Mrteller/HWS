@@ -19,6 +19,7 @@ class ViewController: UITableViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWhistle))
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Home", style: .plain, target: nil, action: nil)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Genres", style: .plain, target: self, action: #selector(selectGenre))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -77,8 +78,13 @@ class ViewController: UITableViewController {
         CKContainer.default().publicCloudDatabase.add(operation)
     }
 
-    @objc func addWhistle() {
+    @objc private func addWhistle() {
         let vc = RecordWhistleViewController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc private func selectGenre() {
+        let vc = MyGenresViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
     

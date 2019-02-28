@@ -17,3 +17,13 @@ struct Suggestions {
     static let creationDate = "creationDate"
 }
 
+struct Whistles {
+    struct Record {
+        static let type = "Whistles"
+    }
+    static let genre = "genre"
+
+    // common "fields"
+    static let creationDate = "creationDate"
+}
+let myGenresSettingKey = "myGenres"

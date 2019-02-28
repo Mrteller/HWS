@@ -5,6 +5,7 @@
 //  Created by Paul on 13.02.2019.
 //  Copyright © 2019 Paul. All rights reserved.
 // Paul's note: experiments in progress. Beware of unused code.
+/// !!!: Genres enum and genres static struct are used simultaneously
 
 import UIKit
 

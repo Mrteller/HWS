@@ -21,6 +21,7 @@
 		DA1B29B1220F732100BB581F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA1B29AF220F732100BB581F /* LaunchScreen.storyboard */; };
 		DA1B29B9220F754700BB581F /* RecordWhistleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1B29B8220F754700BB581F /* RecordWhistleViewController.swift */; };
 		DA1B29BF22146B6E00BB581F /* SelectGenreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1B29BE22146B6E00BB581F /* SelectGenreViewController.swift */; };
+		DA57996A222710A200FA1ABF /* MyGenresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA579969222710A200FA1ABF /* MyGenresViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		DA1B29B2220F732100BB581F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DA1B29B8220F754700BB581F /* RecordWhistleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordWhistleViewController.swift; sourceTree = "<group>"; };
 		DA1B29BE22146B6E00BB581F /* SelectGenreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectGenreViewController.swift; sourceTree = "<group>"; };
+		DA579969222710A200FA1ABF /* MyGenresViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyGenresViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 				DA1B29A6220F731A00BB581F /* AppDelegate.swift */,
 				DA1B29A8220F731A00BB581F /* ViewController.swift */,
 				DA019DF32224790200117F30 /* ResultsViewController.swift */,
+				DA579969222710A200FA1ABF /* MyGenresViewController.swift */,
 				DA1B29B8220F754700BB581F /* RecordWhistleViewController.swift */,
 				DA17F55B221B0C17006400E9 /* AddCommentsViewController.swift */,
 				DA17F55F221C625E006400E9 /* UIView+utils.swift */,
@@ -191,6 +194,7 @@
 				DA1B29BF22146B6E00BB581F /* SelectGenreViewController.swift in Sources */,
 				DA17F55E221C5A94006400E9 /* SubmitViewController.swift in Sources */,
 				DA1B29B9220F754700BB581F /* RecordWhistleViewController.swift in Sources */,
+				DA57996A222710A200FA1ABF /* MyGenresViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
