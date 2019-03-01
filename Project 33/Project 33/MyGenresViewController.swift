@@ -44,6 +44,8 @@ class MyGenresViewController: UITableViewController {
                             if error != nil {
                                 // TODO: find out about str, do error handling
                                 print(error!.localizedDescription)
+                            } else {
+                                print("Deleting subscription with ID \(subscription.subscriptionID)")
                             }
                         }
                     }
@@ -53,11 +55,16 @@ class MyGenresViewController: UITableViewController {
                         let notification = CKSubscription.NotificationInfo()
                         notification.alertBody = "There is a new whistle in the \(genre.localizedName()) genre."
                         notification.soundName = "default"
+                        notification.category = Whistles.Record.type + " creation" // TODO: change to function
+                        notification.collapseIDKey = Whistles.genre
+                        notification.shouldBadge = true
                         
                         subscription.notificationInfo = notification
                         database.save(subscription) { resultSubscription, error in
                             if let error = error {
                                 print(error.localizedDescription)
+                            } else {
+                                print("Creating subscription with ID \(subscription.subscriptionID)")
                             }
                         }
                     }
@@ -102,7 +109,11 @@ class MyGenresViewController: UITableViewController {
                 myGenres.append(selectedGenre)
             } else {
                 cell.accessoryType = .none
-                myGenres.remove(at: selectedGenre.hashValue)
+                // print(myGenres)
+                // print(selectedGenre.hashValue)
+                // myGenres.remove(at: selectedGenre.hashValue)
+                myGenres.remove(at: myGenres.firstIndex(of: selectedGenre)!)
+
             }
         }
         tableView.deselectRow(at: indexPath, animated: true)
