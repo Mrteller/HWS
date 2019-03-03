@@ -55,9 +55,11 @@ class MyGenresViewController: UITableViewController {
                         let notification = CKSubscription.NotificationInfo()
                         notification.alertBody = "There is a new whistle in the \(genre.localizedName()) genre."
                         notification.soundName = "default"
-                        notification.category = Whistles.Record.type + " creation" // TODO: change to function
-                        notification.collapseIDKey = Whistles.genre
+                        notification.category = genre.rawValue // TODO: change to function
+                        notification.collapseIDKey = Whistles.genre // Analog of content.threadIdentifier = "Some thread" for UNMutableNotificationContent()?
                         notification.shouldBadge = true
+                        notification.shouldSendContentAvailable = true
+
                         
                         subscription.notificationInfo = notification
                         database.save(subscription) { resultSubscription, error in

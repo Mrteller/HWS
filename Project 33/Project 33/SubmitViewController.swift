@@ -70,8 +70,8 @@ class SubmitViewController: UIViewController {
         //        }
         
         let whistleRecord = CKRecord(recordType: "Whistles")
-        whistleRecord["genre"] = genre // as CKRecordValue
-        whistleRecord["comments"] = comments // as CKRecordValue
+        whistleRecord["genre"] = genre  as CKRecordValue // works without 'as'
+        whistleRecord["comments"] = comments as CKRecordValue
         
         let audioURL = RecordWhistleViewController.getWhistleURL()
         let whistleAsset = CKAsset(fileURL: audioURL)

@@ -11,10 +11,10 @@ import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
-
+    
     var window: UIWindow?
-
-
+    
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert,.badge, .sound]) { granted, error in
             if let error = error {
@@ -25,6 +25,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 }
             }
         }
+        
+        let categories: [UNNotificationCategory]
+        if #available(iOS 12.0, *) {
+            categories = SelectGenreViewController.Genres.allCases.compactMap {
+                return UNNotificationCategory(identifier: $0.rawValue, actions: [], intentIdentifiers: [], hiddenPreviewsBodyPlaceholder: "Hidden Previews Body Placeholder", categorySummaryFormat: "Category Summary Format", options: [.customDismissAction, .hiddenPreviewsShowTitle]) }
+        } else {
+            categories = SelectGenreViewController.Genres.allCases.compactMap {
+                return UNNotificationCategory(identifier: $0.rawValue, actions: [], intentIdentifiers: [], options: [.customDismissAction])
+            }
+        }
+        UNUserNotificationCenter.current().setNotificationCategories(Set(categories))
         UNUserNotificationCenter.current().delegate = self
         return true
     }
@@ -32,13 +43,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.alert,.badge, .sound])
     }
-    
+    // fires only if 
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        // TOCHECK: fires only if notification.shouldSendContentAvailable = true (CloudKit version) or 
+        switch response.actionIdentifier {
+        case  UNNotificationDefaultActionIdentifier:
+            print(#function, "OK", response.actionIdentifier)
+        case UNNotificationDismissActionIdentifier:
+            print(#function, "Dismiss", response.actionIdentifier) // works only if .customDismissAction included for UNNotificationCategory options
+        default:
+            print(#function, response.actionIdentifier)
+        }
+        completionHandler()
+    }
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("Failed to register for remote notifications with error: \(error.localizedDescription)")
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         print("Register for remote notifications with DeviceToken: \(deviceToken.description)")
+    }
+    
+//    func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
+//        // 'UILocalNotification' was deprecated in iOS 10.0: Use UserNotifications Framework's UNNotificationRequest
+//    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        // TOCHECK: fires only if notification.shouldSendContentAvailable = true (CloudKit version) or "mutable-content" : 1 for APS json
+        // Important: include background capabilitues
+        print("silent notification triggered")
+        completionHandler(.noData)
     }
     
     func applicationWillResignActive(_ application: UIApplication) {
