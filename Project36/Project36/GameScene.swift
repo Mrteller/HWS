@@ -9,9 +9,16 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var player: SKSpriteNode!
+    var scoreLabel: SKLabelNode!
+    
+    var score = 0 {
+        didSet {
+            scoreLabel.text = "SCORE: \(score)"
+        }
+    }
     
     override func didMove(to view: SKView) {
         createPlayer()
@@ -19,10 +26,46 @@ class GameScene: SKScene {
         createBackground()
         createGround()
         startRocks()
+        createScore()
+        
+        physicsWorld.gravity = CGVector(dx: 0.0, dy: -1.0)
+        physicsWorld.contactDelegate = self
+        
+        player.physicsBody = SKPhysicsBody(texture: player.texture!, size: player.texture!.size())
+        player.physicsBody?.contactTestBitMask = player.physicsBody!.collisionBitMask
+        player.physicsBody?.isDynamic = true
+        
+        // player.physicsBody?.collisionBitMask = 0
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        player.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+        player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 20))
 
+    }
+    
+    override func update(_ currentTime: TimeInterval) {
+        let value = player.physicsBody!.velocity.dy * 0.001
+        let rotate = SKAction.rotate(toAngle: value, duration: 0.1)
+        player.run(rotate)
+    }
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        print(#function)
+        if contact.bodyA.node?.name == "scoreDetect" || contact.bodyB.node?.name == "scoreDetect" {
+            if contact.bodyA.node == player {
+                contact.bodyB.node?.removeFromParent()
+            } else {
+                contact.bodyA.node?.removeFromParent()
+            }
+            let sound = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
+            run(sound)
+            score += 1
+            return
+        }
+        guard contact.bodyA.node != nil && contact.bodyB.node != nil else {
+            return
+        }
     }
     
     private func createPlayer() {
@@ -88,6 +131,9 @@ class GameScene: SKScene {
             ground.zPosition = -10
             // ground.position = CGPoint(x: (groundTexture.size().width / 2 + groundTexture.size().width * CGFloat(i)), y: groundTexture.size().height / 2 )
             ground.position = CGPoint(x: groundTexture.size().width * (CGFloat(0.5) + CGFloat(i)), y: groundTexture.size().height / 2 )
+            ground.physicsBody = SKPhysicsBody(texture: ground.texture!, size: ground.texture!.size())
+            ground.physicsBody?.isDynamic = false
+            
             addChild(ground)
             
             let moveLeft = SKAction.moveBy(x: -groundTexture.size().width, y: 0, duration: 5)
@@ -102,10 +148,15 @@ class GameScene: SKScene {
         // 1
         let rockTexture = SKTexture(imageNamed: "rock")
         let topRock = SKSpriteNode(texture: rockTexture)
+        topRock.physicsBody = SKPhysicsBody(texture: rockTexture, size: rockTexture.size())
+        topRock.physicsBody?.isDynamic = false
+        
         topRock.zRotation = .pi
         topRock.xScale = -1.0
         
         let bottomRock = SKSpriteNode(texture: rockTexture)
+        bottomRock.physicsBody = SKPhysicsBody(texture: rockTexture, size: rockTexture.size())
+        bottomRock.physicsBody?.isDynamic = false
         topRock.zPosition = -20
         bottomRock.zPosition = -20
         // 2
@@ -144,6 +195,16 @@ class GameScene: SKScene {
         let repeatForever = SKAction.repeatForever(sequence)
         
         run(repeatForever)
+    }
+    
+    private func createScore() {
+        scoreLabel = SKLabelNode(fontNamed: "Optima-ExtraBlack")
+        scoreLabel.fontSize = 25
+        scoreLabel.position = CGPoint(x: size.width / 2, y: size.height - 60)
+        scoreLabel.text = "SCORE: 0"
+        scoreLabel.fontColor = UIColor.black
+        
+        addChild(scoreLabel)
     }
 
 }
