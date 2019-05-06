@@ -9,6 +9,12 @@
 import SpriteKit
 import GameplayKit
 
+enum GameState {
+    case showinglogo
+    case playing
+    case dead
+}
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var player: SKSpriteNode!
@@ -20,6 +26,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    var backgroundMusic: SKAudioNode!
+    var logo: SKSpriteNode!
+    var gameOver: SKSpriteNode!
+    var gameState = GameState.showinglogo
+    
     override func didMove(to view: SKView) {
         createPlayer()
         createSky()
@@ -28,7 +39,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         startRocks()
         createScore()
         
-        physicsWorld.gravity = CGVector(dx: 0.0, dy: -1.0)
+        physicsWorld.gravity = CGVector(dx: 0.0, dy: -2.0)
         physicsWorld.contactDelegate = self
         
         player.physicsBody = SKPhysicsBody(texture: player.texture!, size: player.texture!.size())
@@ -36,11 +47,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.physicsBody?.isDynamic = true
         
         // player.physicsBody?.collisionBitMask = 0
+        
+        if let musicURL = Bundle.main.url(forResource: "music", withExtension: "m4a") {
+            backgroundMusic = SKAudioNode(url: musicURL)
+            addChild(backgroundMusic)
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         player.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-        player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 20))
+        player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 15))
 
     }
     
@@ -51,7 +67,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        print(#function)
+        print(#function, contact.bodyA.node?.name, contact.bodyB.node?.name)
         if contact.bodyA.node?.name == "scoreDetect" || contact.bodyB.node?.name == "scoreDetect" {
             if contact.bodyA.node == player {
                 contact.bodyB.node?.removeFromParent()
@@ -66,6 +82,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guard contact.bodyA.node != nil && contact.bodyB.node != nil else {
             return
         }
+        
+        if contact.bodyA.node == player || contact.bodyB.node == player {
+            if let explosion = SKEmitterNode(fileNamed: "PlayerExplosion") {
+                explosion.position = player.position
+                addChild(explosion)
+            }
+        }
+        
+        let sound = SKAction.playSoundFileNamed("explosion.wav", waitForCompletion: false)
+        run(sound)
+        
+        player.removeFromParent()
+        speed = 0
     }
     
     private func createPlayer() {
@@ -162,6 +191,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // 2
         let rockCollision = SKSpriteNode(color: UIColor.red, size: CGSize(width: 32, height: size.height)) //was frame.hight
         rockCollision.name = "scoreDetect"
+        rockCollision.physicsBody = SKPhysicsBody(rectangleOf: rockCollision.size)
+        rockCollision.physicsBody?.isDynamic = false
+
+
         
         addChild(topRock)
         addChild(bottomRock)
