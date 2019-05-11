@@ -36,15 +36,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         createSky()
         createBackground()
         createGround()
-        startRocks()
+        // startRocks()
         createScore()
+        createLogos()
         
         physicsWorld.gravity = CGVector(dx: 0.0, dy: -2.0)
         physicsWorld.contactDelegate = self
         
         player.physicsBody = SKPhysicsBody(texture: player.texture!, size: player.texture!.size())
         player.physicsBody?.contactTestBitMask = player.physicsBody!.collisionBitMask
-        player.physicsBody?.isDynamic = true
+        player.physicsBody?.isDynamic = false
         
         // player.physicsBody?.collisionBitMask = 0
         
@@ -55,6 +56,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        switch gameState {
+        case .showinglogo:
+            gameState = .playing
+            
+            let fadeOut = SKAction.fadeOut(withDuration: 0.5)
+        default:
+            <#code#>
+        }
         player.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
         player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 15))
 
@@ -238,6 +247,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.fontColor = UIColor.black
         
         addChild(scoreLabel)
+    }
+    
+    func createLogos() {
+        logo = SKSpriteNode(imageNamed: "logo")
+        logo.position = CGPoint(x: frame.midX, y: frame.midY)
+        addChild(logo)
+        
+        gameOver = SKSpriteNode(imageNamed: "gameover")
+        gameOver.position = CGPoint(x: frame.midX, y: frame.midY)
+        gameOver.alpha = 0
+        addChild(gameOver)
+        
     }
 
 }
