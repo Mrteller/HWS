@@ -61,26 +61,47 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             gameState = .playing
             
             let fadeOut = SKAction.fadeOut(withDuration: 0.5)
-        default:
-            <#code#>
+            let remove = SKAction.removeFromParent()
+            let wait = SKAction.wait(forDuration: 0.5)
+            
+            let activatePlayer = SKAction.run { [unowned self] in
+                self.player.physicsBody?.isDynamic = true
+                self.startRocks()
+            }
+            let sequence = SKAction.sequence([fadeOut, wait, activatePlayer, remove])
+            
+            logo.run(sequence)
+        case .playing:
+            player.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+            player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 15))
+        case .dead:
+            let scene = GameScene(fileNamed: "GameScene")!
+            let transition = SKTransition.moveIn(with: .right, duration: 1)
+            view?.presentScene(scene, transition: transition)
         }
-        player.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-        player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 15))
+
 
     }
     
     override func update(_ currentTime: TimeInterval) {
+        guard player != nil  else { return }
         let value = player.physicsBody!.velocity.dy * 0.001
         let rotate = SKAction.rotate(toAngle: value, duration: 0.1)
         player.run(rotate)
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        print(#function, contact.bodyA.node?.name, contact.bodyB.node?.name)
+        print(#function, contact.bodyA.node, contact.bodyB.node)
+        if contact.bodyA.node?.parent == nil || contact.bodyB.node?.parent == nil { return }
+        // see: https://stackoverflow.com/a/26216093 and also
+        // https://stackoverflow.com/a/31630284 and https://developer.apple.com/library/archive/samplecode/SpriteKit_Physics_Collisions/Introduction/Intro.html
         if contact.bodyA.node?.name == "scoreDetect" || contact.bodyB.node?.name == "scoreDetect" {
+            
             if contact.bodyA.node == player {
+//                lastRemovedNode = contact.bodyB.node
                 contact.bodyB.node?.removeFromParent()
             } else {
+//                lastRemovedNode = contact.bodyA.node
                 contact.bodyA.node?.removeFromParent()
             }
             let sound = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
@@ -101,6 +122,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let sound = SKAction.playSoundFileNamed("explosion.wav", waitForCompletion: false)
         run(sound)
+        
+        gameOver.alpha = 1
+        gameState = .dead
+        backgroundMusic.run(.stop())
         
         player.removeFromParent()
         speed = 0
@@ -216,7 +241,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // this next value affects the width of the gap between rocks
         let rockDistance = CGFloat(70)
         //4
-        topRock.position = CGPoint(x: xPosition, y: yPosition + topRock.size.height + rockDistance) //was topRock.frame.height
+        topRock.position = CGPoint(x: xPosition, y: yPosition + topRock.frame.height + rockDistance) //was topRock.frame.height
         bottomRock.position = CGPoint(x: xPosition, y: yPosition - rockDistance)
         
         rockCollision.position = CGPoint(x: xPosition + rockCollision.frame.width * 2, y: size.height / 2)
