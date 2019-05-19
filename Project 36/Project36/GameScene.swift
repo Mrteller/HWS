@@ -5,6 +5,7 @@
 //  Created by Paul on 04.03.2019.
 //  Copyright © 2019 Paul. All rights reserved.
 //
+// FIXME: Scale bug when new game begins with after the `.dead' state
 
 import SpriteKit
 import GameplayKit
@@ -31,6 +32,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gameOver: SKSpriteNode!
     var gameState = GameState.showinglogo
     
+    private lazy var playerXOffset: CGFloat = { player.frame.width + 4 }() // play with it
+    
     override func didMove(to view: SKView) {
         createPlayer()
         createSky()
@@ -53,6 +56,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             backgroundMusic = SKAudioNode(url: musicURL)
             addChild(backgroundMusic)
         }
+
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -88,10 +92,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let value = player.physicsBody!.velocity.dy * 0.001
         let rotate = SKAction.rotate(toAngle: value, duration: 0.1)
         player.run(rotate)
+
+        if player.position.x < playerXOffset {
+            player.physicsBody?.applyImpulse(CGVector(dx: 1, dy: 0))
+        } else if player.position.x > playerXOffset*2 {
+            player.physicsBody?.applyImpulse(CGVector(dx: -0.5, dy: 0))
+        }
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        print(#function, contact.bodyA.node, contact.bodyB.node)
+        // print(#function, contact.bodyA.node, contact.bodyB.node)
         if contact.bodyA.node?.parent == nil || contact.bodyB.node?.parent == nil { return }
         // see: https://stackoverflow.com/a/26216093 and also
         // https://stackoverflow.com/a/31630284 and https://developer.apple.com/library/archive/samplecode/SpriteKit_Physics_Collisions/Introduction/Intro.html
