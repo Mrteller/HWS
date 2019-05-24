@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class MainViewController: UIViewController {
 
     @IBOutlet weak var cardContainer: UIView!
     
@@ -19,7 +19,7 @@ class ViewController: UIViewController {
         loadCards()
     }
 
-    func loadCards()  {
+    @objc func loadCards()  {
         for card in allCards {
             card.view.removeFromSuperview()
             card.removeFromParent()
@@ -72,6 +72,23 @@ class ViewController: UIViewController {
             // add the new card view controller to our array for easier tracking
             allCards.append(card)
         }
+        view.isUserInteractionEnabled = true
+        
+    }
+    
+    func cardTaped(_ taped: CardViewController)  {
+        guard view.isUserInteractionEnabled == true else { return }
+        view.isUserInteractionEnabled = false
+        for card in allCards {
+            if card == taped {
+                card.wasTapped()
+                card.perform(#selector(card.wasntTapped), with: nil, afterDelay: 1)
+            } else {
+                card.wasntTapped()
+            }
+        }
+        
+        perform(#selector(loadCards), with: nil, afterDelay: 2)
         
     }
 
