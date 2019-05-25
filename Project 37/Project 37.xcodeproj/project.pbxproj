@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DA4859B022998AA600ED7B55 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4859AF22998AA600ED7B55 /* GradientView.swift */; };
 		DAC6FD852291886C0080F0A3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC6FD842291886C0080F0A3 /* AppDelegate.swift */; };
 		DAC6FD872291886C0080F0A3 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC6FD862291886C0080F0A3 /* MainViewController.swift */; };
 		DAC6FD8A2291886C0080F0A3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DAC6FD882291886C0080F0A3 /* Main.storyboard */; };
@@ -67,6 +68,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DA4859AF22998AA600ED7B55 /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		DAC6FD812291886C0080F0A3 /* Project 37.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project 37.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAC6FD842291886C0080F0A3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DAC6FD862291886C0080F0A3 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 			children = (
 				DAC6FD842291886C0080F0A3 /* AppDelegate.swift */,
 				DAC6FD862291886C0080F0A3 /* MainViewController.swift */,
+				DA4859AF22998AA600ED7B55 /* GradientView.swift */,
 				DAC6FDC02292B2410080F0A3 /* CardViewController.swift */,
 				DAC6FD882291886C0080F0A3 /* Main.storyboard */,
 				DAC6FD8B2291886E0080F0A3 /* Assets.xcassets */,
@@ -307,6 +310,7 @@
 			files = (
 				DAC6FD872291886C0080F0A3 /* MainViewController.swift in Sources */,
 				DAC6FD852291886C0080F0A3 /* AppDelegate.swift in Sources */,
+				DA4859B022998AA600ED7B55 /* GradientView.swift in Sources */,
 				DAC6FDC12292B2410080F0A3 /* CardViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
